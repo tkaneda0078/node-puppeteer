@@ -1,8 +1,8 @@
 {
-  "name": "news-api",
+  "name": "node-puppeteer",
   "version": "1.0.0",
   "description": "",
-  "main": "app.coffee",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
