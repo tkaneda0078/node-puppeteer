@@ -4,28 +4,53 @@ const puppeteer = require('puppeteer')
 
 class News {
 
-  /**
-   * constructor
-   * @param {String} url
-   */
-  constructor (url) {
+  constructor(url) {
     this.url = url
+    this.browser = null
+    this.page = null
+  }
+
+  /**
+   * build
+   *
+   */
+  async build () {
+    await this.initBrowser()
+    await this.initPage()
+    await this.goToURL()
+  }
+
+  // todo スーパークラスにまとめる
+  async initBrowser() {
+    this.browser = await puppeteer.launch({ headless: false })
+  }
+
+  // todo スーパークラスにまとめる
+  async initPage () {
+    this.page = await this.browser.newPage()
+  }
+
+  // todo スーパークラスにまとめる
+  async goToURL () {
+    await this.page.goto(this.url)
+  }
+
+  // todo スーパークラスにまとめる
+  async closeBrowser() {
+    await this.browser.close()
   }
 
   /**
    * screenshot
    *
+   * @param {String} path
    */
-  async screenshot () {
+  async screenshot(path) {
     try {
-      let browser = await puppeteer.launch({
-        headless: true,
-        slowMo: 50,
+      await this.page.screenshot({
+        path: path
       })
-      let page = await browser.newPage()
-      await page.goto(this.url)
-      await page.screenshot({path: 'example.png'})
-      await browser.close()
+      this.closeBrowser()
     } catch (e) {
       console.log(e)
     }
