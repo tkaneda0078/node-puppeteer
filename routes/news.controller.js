@@ -7,9 +7,10 @@ const News = require('../models/news')
 
 router.get('/', function (req, res, next) {
   (async () => {
-    const news = await new News('https://www.shuwasystem.co.jp/newbook.html')
-    await news.build()
-    await news.startScraping()
+    let url = 'https://www.shuwasystem.co.jp/newbook.html'
+    const news = await new News()
+    await news.build(url)
+    await news.scraping()
     // await news.screenshot('example.png')
   })()
 })

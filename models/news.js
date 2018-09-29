@@ -1,51 +1,19 @@
 'use strict'
 
-const puppeteer = require('puppeteer')
+const puppeteerExtensionClass = require('../lib/puppeteerExtensionClass')
 const delay = require('delay')
 
-class News {
+class News extends puppeteerExtensionClass {
 
-  constructor (url) {
-    this.url = url
-    this.browser = null
-    this.page = null
-  }
-
-  /**
-   * build
-   *
-   */
-  async build () {
-    await this.initBrowser()
-    await this.initPage()
-    await this.goToURL(this.url)
-  }
-
-  // todo スーパークラスにまとめる
-  async initBrowser () {
-    this.browser = await puppeteer.launch({headless: false})
-  }
-
-  // todo スーパークラスにまとめる
-  async initPage () {
-    this.page = await this.browser.newPage()
-  }
-
-  // todo スーパークラスにまとめる
-  async goToURL (url) {
-    await this.page.goto(url)
-  }
-
-  // todo スーパークラスにまとめる
-  async closeBrowser () {
-    await this.browser.close()
+  constructor () {
+    super()
   }
 
   /**
    * scraping
    *
    */
-  async startScraping () {
+  async scraping () {
     // 詳細ページのURLを取得
     const results = await this.page.evaluate(() =>
       Array.from(document.querySelectorAll('#sinkan dt a'))
@@ -68,6 +36,7 @@ class News {
           'overview': overview
 
         })
+      console.log(data)
       await delay(1000)
     }
 
