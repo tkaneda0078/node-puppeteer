@@ -15,13 +15,13 @@ class News extends puppeteerExtensionClass {
    */
   async scraping () {
     // 詳細ページのURLを取得
-    const data = await this.page.evaluate(() =>
+    const results = await this.page.evaluate(() =>
       Array.from(document.querySelectorAll('#sinkan dt a'))
         .map(a => a.href))
 
     // 詳細から各データを抽出
-    let contents = []
-    for (const url of data) {
+    let data = []
+    for (const url of results) {
       await this.initPage()
       await this.goToURL(url)
 
@@ -30,13 +30,13 @@ class News extends puppeteerExtensionClass {
       let overview = await this.page.evaluate(() =>
         document.querySelector('.info > p.syoseki').textContent)
 
-      contents.push(
+      data.push(
         {
           'title'   : title,
           'overview': overview
 
         })
-
+      console.log(data)
       await delay(1000)
     }
 
