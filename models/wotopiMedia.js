@@ -3,7 +3,11 @@
 const puppeteerExtensionClass = require('../lib/puppeteerExtensionClass')
 const delay = require('delay')
 
-class News extends puppeteerExtensionClass {
+/**
+ * wotopiメディア用
+ *
+ */
+class WotopiMedia extends puppeteerExtensionClass {
 
   constructor () {
     super()
@@ -15,49 +19,35 @@ class News extends puppeteerExtensionClass {
    */
   async scraping () {
     // 詳細ページのURLを取得
-    const results = await this.page.evaluate(() =>
-      Array.from(document.querySelectorAll('#sinkan dt a'))
+    const data = await this.page.evaluate(() =>
+      Array.from(document.querySelectorAll('.figure-list > .col a'))
         .map(a => a.href))
 
     // 詳細から各データを抽出
-    let data = []
-    for (const url of results) {
+    let contents = []
+    for (const url of data) {
       await this.initPage()
       await this.goToURL(url)
 
       let title = await this.page.evaluate(() =>
-        document.querySelector('h1.syoseki').textContent)
-      let overview = await this.page.evaluate(() =>
-        document.querySelector('.info > p.syoseki').textContent)
+        document.querySelector('h1.post-title').textContent)
+      let image = await this.page.evaluate(() =>
+        document.querySelector('.post-image > img').src)
 
-      data.push(
+      contents.push(
         {
+          'url'     : url,
           'title'   : title,
-          'overview': overview
+          'image'   : image
 
         })
-      console.log(data)
-      await delay(1000)
+
+      await delay(2000)
     }
 
     this.closeBrowser()
   }
 
-  /**
-   * screenshot
-   *
-   * @param {String} path
-   */
-  async screenshot (path) {
-    try {
-      await this.page.screenshot({
-        path: path
-      })
-      this.closeBrowser()
-    } catch (e) {
-      console.log(e)
-    }
-  }
 }
 
-module.exports = News
+module.exports = WotopiMedia
