@@ -1,13 +1,13 @@
 'use strict'
 
-const puppeteerExtensionClass = require('../lib/puppeteerExtensionClass')
+const puppeteerExtension = require('../lib/puppeteerExtension')
 const delay = require('delay')
 
 /**
  * wotopiメディア用
  *
  */
-class WotopiMedia extends puppeteerExtensionClass {
+class WotopiMedia extends puppeteerExtension {
 
   constructor () {
     super()

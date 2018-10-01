@@ -9,7 +9,6 @@ router.get('/:category', function (req, res, next) {
   (async () => {
     let baseUrl = 'https://wotopi.jp/archives/category/'
     let url = baseUrl + req.params.category
-    console.log(url)
     const wotopi = await new WotopiMedia()
     await wotopi.build(url)
     await wotopi.scraping()

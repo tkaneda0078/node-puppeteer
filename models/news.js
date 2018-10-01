@@ -1,9 +1,9 @@
 'use strict'
 
-const puppeteerExtensionClass = require('../lib/puppeteerExtensionClass')
+const puppeteerExtension = require('../lib/puppeteerExtension')
 const delay = require('delay')
 
-class News extends puppeteerExtensionClass {
+class News extends puppeteerExtension {
 
   constructor () {
     super()
