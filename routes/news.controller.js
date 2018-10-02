@@ -2,38 +2,24 @@
 
 const express = require('express')
 const router = express.Router()
-var config = require('config');
-const request = require('request');
-// const News = require('../models/news')
-const WotopiMedia = require('../models/wotopiMedia')
+const config = require('config')
+const News = require('../models/news')
 
-router.get('/:category', function (req, res, next) {
+router.get('/:media/:category', function (req, res, next) {
   (async () => {
+    let mediaName = req.params.media
     let category = req.params.category
-    // 各メディアのURLを取得
-    let mediaUrl = config.get(`Media.${category}`)
-    // todo 動的に
-    for (let key in mediaUrl) {
-      let url = mediaUrl[key] + category
-      if (!validateIsRequestStatus(url)) {
-        continue
-      }
+    // メディア情報を取得
+    let media = config.get(`Media.${mediaName}`)
+    let url = media.url + category
 
-      const wotopi = await new WotopiMedia()
-      await wotopi.build(url)
-      await wotopi.scraping()
-    }
+    // todo validate
+
+    const news = await new News()
+    await news.build(url)
+    await news.setSelectors(media.selector)
+    await news.scraping()
   })()
 })
-
-function validateIsRequestStatus(url) {
-  request(url, function (error, response) {
-    if (!error && response.statusCode == 200) {
-      return true
-    } else {
-      return false
-    }
-  })
-}
 
 module.exports = router

@@ -1,8 +1,20 @@
 {
   "Media": {
-    "fashion": { // category
-      "wotopi": "https://wotopi.jp/archives/category/"
-//      "beautynewstokyo": "http://www.beautynewstokyo.jp/tag/"
+    "wotopi": { // media name
+      "url": "https://wotopi.jp/archives/category/",
+      "selector": {
+        "a": ".figure-list > .col a",
+        "title": "h1.post-title",
+        "image": ".post-image > img"
+      },
+      "beautynewstokyo": {
+        "url": "http://www.beautynewstokyo.jp/tag/",
+        "selector": {
+          "a": "",
+          "title": "",
+          "image": ""
+        },
+      }
     }
   }
 }

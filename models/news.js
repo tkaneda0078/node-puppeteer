@@ -7,6 +7,15 @@ class News extends puppeteerExtension {
 
   constructor () {
     super()
+    this.selectors = []
+  }
+
+  async setSelectors (selector) {
+    this.selectors = selector
+  }
+
+  getSelectors () {
+    return this.selectors
   }
 
   /**
@@ -14,50 +23,48 @@ class News extends puppeteerExtension {
    *
    */
   async scraping () {
-    // 詳細ページのURLを取得
-    const data = await this.page.evaluate(() =>
-      Array.from(document.querySelectorAll('#sinkan dt a'))
-        .map(a => a.href))
+    let selectors = this.getSelectors()
 
-    // 詳細から各データを抽出
+    // 各詳細ページのURLを取得
+    const data = await this.page.evaluate(selector => {
+      return Array.from(document.querySelectorAll(selector))
+        .map(a => a.href)
+    }, selectors.a)
+
+    // 詳細ページから各データを抽出
     let contents = []
-    for (const url of data) {
-      await this.initPage()
-      await this.goToURL(url)
+    try {
+      for (const url of data) {
+        await this.initPage()
+        await this.goToURL(url)
 
-      let title = await this.page.evaluate(() =>
-        document.querySelector('h1.syoseki').textContent)
-      let overview = await this.page.evaluate(() =>
-        document.querySelector('.info > p.syoseki').textContent)
+        // タイトル取得
+        let title = await this.page.evaluate(selector => {
+          return document.querySelector(selector).textContent
+        }, selectors.title)
 
-      contents.push(
-        {
-          'title'   : title,
-          'overview': overview
+        // 画像取得
+        let image = await this.page.evaluate(selector => {
+          return document.querySelector(selector).src
+        }, selectors.image)
 
-        })
+        contents.push(
+          {
+            'url'     : url,
+            'title'   : title,
+            'image'   : image
 
-      await delay(1000)
+          })
+
+        await delay(12000)
+      }
+    } catch (e) {
+      console.log(e)
     }
 
     this.closeBrowser()
   }
 
-  /**
-   * screenshot
-   *
-   * @param {String} path
-   */
-  async screenshot (path) {
-    try {
-      await this.page.screenshot({
-        path: path
-      })
-      this.closeBrowser()
-    } catch (e) {
-      console.log(e)
-    }
-  }
 }
 
 module.exports = News
