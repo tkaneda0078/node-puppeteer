@@ -4,3 +4,4 @@
 /config/default.json
 /config/firebase/firebase.key.json
 /config/db/*
+/.env
